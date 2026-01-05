@@ -19,7 +19,11 @@ setup_from_push_event() {
 list_pulls() {
   pulls_endpoint="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls?state=closed&sort=updated&direction=desc"
   if [ -n "${INPUT_GITHUB_TOKEN}" ]; then
-    curl -s -H "Authorization: token ${INPUT_GITHUB_TOKEN}" "${pulls_endpoint}"
+    curl -s \
+      -H "Accept: application/vnd.github+json" \
+      -H "Authorization: Bearer ${INPUT_GITHUB_TOKEN}" \
+      -H "X-GitHub-Api-Version: 2022-11-28" \
+      "${pulls_endpoint}"
   else
     echo "INPUT_GITHUB_TOKEN is not available. Subscequent GitHub API call may fail due to API limit." >&2
     curl -s "${pulls_endpoint}"

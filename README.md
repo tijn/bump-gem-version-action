@@ -39,6 +39,7 @@ This action requires the following permissions:
 
 ```yaml
 permissions:
+  issues: write  # For creating labels
   pull-requests: read
   contents: write
 ```

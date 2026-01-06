@@ -5,6 +5,28 @@ cd "${GITHUB_WORKSPACE}" || exit 1
 
 git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
+
+# Create labels if they don't exist
+create_labels() {
+  echo "Setting up bump labels..."
+
+  for label_file in /labels/*.json; do
+    if [ -f "$label_file" ]; then
+      label_name=$(jq -r '.name' "$label_file")
+      label_color=$(jq -r '.color' "$label_file")
+      label_desc=$(jq -r '.description' "$label_file")
+
+      echo "Creating label: ${label_name}"
+      curl -s -X POST \
+        -H "Accept: application/vnd.github+json" \
+        -H "Authorization: Bearer ${INPUT_GITHUB_TOKEN}" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        "https://api.github.com/repos/${GITHUB_REPOSITORY}/labels" \
+        -d "{\"name\":\"${label_name}\",\"color\":\"${label_color}\",\"description\":\"${label_desc}\"}"
+    fi
+  done
+}
+
 # Setup these env variables.
 # - LABELS
 # - PR_NUMBER
@@ -19,7 +41,11 @@ setup_from_push_event() {
 list_pulls() {
   pulls_endpoint="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls?state=closed&sort=updated&direction=desc"
   if [ -n "${INPUT_GITHUB_TOKEN}" ]; then
-    curl -s -H "Authorization: token ${INPUT_GITHUB_TOKEN}" "${pulls_endpoint}"
+    curl -s \
+      -H "Accept: application/vnd.github+json" \
+      -H "Authorization: Bearer ${INPUT_GITHUB_TOKEN}" \
+      -H "X-GitHub-Api-Version: 2022-11-28" \
+      "${pulls_endpoint}"
   else
     echo "INPUT_GITHUB_TOKEN is not available. Subscequent GitHub API call may fail due to API limit." >&2
     curl -s "${pulls_endpoint}"
@@ -46,6 +72,7 @@ setup_env() {
   export GEM_RELEASE_RELEASE_GITHUB=true
 }
 
+create_labels
 setup_from_push_event
 
 BUMP_LEVEL="${INPUT_DEFAULT_BUMP_LEVEL}"

@@ -31,3 +31,15 @@ Always true when DRY_RUN=true.
 
 `major`/`minor`/`patch`
 The bump level that was used.
+
+
+## Permissions Required
+
+This action requires the following permissions:
+
+```yaml
+permissions:
+  issues: write  # For creating labels
+  pull-requests: read
+  contents: write
+```

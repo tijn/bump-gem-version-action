@@ -1,5 +1,5 @@
 name: "bump gem - Bump gem version when merging Pull Request with bump labels"
-description: "Bump gem version when merging Pull Request with specific labels (bump:major,bump:minor,bump:patch)"
+description: "Bump gem version when merging Pull Request with specific labels (bump:major,bump:minor,bump:patch). Automatically creates required labels if they don't exist."
 author: "tijn,intens"
 inputs:
   default_bump_level:

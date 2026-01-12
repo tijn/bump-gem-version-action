@@ -66,7 +66,7 @@ setup_gem_credentials() {
 
 setup_env() {
   export GEM_RELEASE_RELEASE_TOKEN="${INPUT_GITHUB_TOKEN}"
-  export GEM_RELEASE_RELEASE_HOST=https://rubygems.pkg.github.com/jobport
+  export GEM_RELEASE_RELEASE_HOST=https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}
   export GEM_RELEASE_RELEASE_KEY=github
   export GEM_RELEASE_RELEASE_DESCR="${PR_TITLE}"
   export GEM_RELEASE_RELEASE_GITHUB=true

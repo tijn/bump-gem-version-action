@@ -1,17 +1,21 @@
 name: "bump gem - Bump gem version when merging Pull Request with bump labels"
 description: "Bump gem version when merging Pull Request with specific labels (bump:major,bump:minor,bump:patch). Automatically creates required labels if they don't exist."
 author: "tijn,intens"
+env:
+  GITHUB_TOKEN:
+    description: "GITHUB_TOKEN to **merge** pull requests (only used in the pull request stragegy)"
 inputs:
-  default_bump_level:
-    description: "Default bump level if labels are not attached [bump:major,bump:minor,bump:patch]. Do nothing if it's empty"
-  dry_run:
-    description: "Do not actually tag next version if it's true"
   github_token:
     description: "GITHUB_TOKEN to list pull requests"
     default: "${{ github.token }}"
+  strategy:
+    description: "`gem-release` (default): use the gem-release library. `pull-request`: Use a pull request to bump the version instead of a commit to the main branch. Use this if your repository uses the rule: 'Require a pull request before merging'. `dry-run`: Only output the next version without creating a tag or a pull request."
+    default: "gem-release"
 outputs:
   level:
     description: "major, minor or patch (or empty)"
+  pull_request_number:
+    description: If a pull request is created; (using the pull-request strategy) this output will contain its number.
   skipped:
     description: "True if release is skipped. e.g. No labels attached to PR."
 runs:

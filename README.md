@@ -6,18 +6,19 @@ A GitHub action to automatically bump the versions of your Ruby Gems after mergi
 
 It will create a new version of your gem and a git tag with the latest version.
 
+
 ### inputs
 
-**`DEFAULT_BUMP_LEVEL`**
+**`GITHUB_TOKEN`** *Required*
 
-`bump:major`/`bump:minor`/`bump:patch`
-When given the action will use this default to bump the version if no label is present in the pull request.
+The GitHub token to use for authentication. Usually set to `${{ secrets.GITHUB_TOKEN }}`.
 
-**`DRY_RUN`**
+**`STRATEGY`**
 
-`true`/`false`/`""`
+`gem-release`/`pull-request`/`"dry-run"`, default: 'gem-release'
 
-do nothing
+By default the version will be bumped on the main branch. Branch protection rules might require a more complex strategy. Dry run is useful for testing.
+
 
 ### outputs
 
@@ -25,7 +26,6 @@ do nothing
 
 `true`/`false`
 A boolean that indicates if the gem version was bumped.
-Always true when DRY_RUN=true.
 
 **`level`**
 
@@ -35,11 +35,26 @@ The bump level that was used.
 
 ## Permissions Required
 
-This action requires the following permissions:
+This action requires the following permissions for the gem-release strategy:
 
 ```yaml
 permissions:
-  issues: write  # For creating labels
-  pull-requests: read
+  # To commit changes (to the file containting the version):
   contents: write
+  # For creating labels:
+  issues: write
+  # To analyze the merged PR that triggered the action:
+  pull-requests: read
+```
+
+... and for the pull-request strategy:
+
+```yaml
+permissions:
+  # To commit changes (to the file containting the version):
+  contents: write
+  # For creating labels:
+  issues: write
+  # To analyze the merged PR that triggered the action and to create and merge a pull request:
+  pull-requests: write
 ```

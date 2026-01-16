@@ -22,13 +22,14 @@ bump_with_pull_request() {
   fi
   echo "::endgroup::"
 
-  if [ -f "Gemfile.lock" ]; then
-    echo "::group::⭐ Update Gemfile.lock"
-    bundle install
-    git add Gemfile.lock
-    git commit --amend --no-edit
-    echo "::endgroup::"
-  fi
+  # if [ -f "Gemfile.lock" ]; then
+  #   echo "::group::⭐ Update Gemfile.lock"
+  #   sed -i'' -e "/^GEM$/,/^DEPENDENCIES$/ s/^\(    .* (\).*\()\)/\1${new_version}\2/" Gemfile.lock
+
+  #   git add Gemfile.lock
+  #   git commit --amend --no-edit
+  #   echo "::endgroup::"
+  # fi
 
   echo "::group::⏫ Push the bump branch:"
   git push origin "${branch}"
